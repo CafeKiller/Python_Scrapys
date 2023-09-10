@@ -1,3 +1,4 @@
+import os
 import random
 import time
 from urllib import request, parse
@@ -19,7 +20,12 @@ class TieBaSpider(object):
         pass
 
     def sava_html(self, filename, html):
-        with open(filename, "w") as f:
+
+        dir_name = os.getcwd() + "\\..\\outer_files\\"
+        if not os.path.exists(dir_name):
+            os.mkdir(dir_name)
+
+        with open(dir_name + filename, "w") as f:
             f.write(html)
 
     def run(self):
@@ -48,7 +54,7 @@ if __name__ == "__main__":
     start = time.time()
 
     spider = TieBaSpider()
+    spider.run()
 
     end = time.time()
-
     print("爬虫执行时间 ========> %.2f" % (end - start))
