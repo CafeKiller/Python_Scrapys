@@ -12,10 +12,11 @@ Python 爬虫集合
 
 
 ## 技术栈
-| LibraryName | Version | Description   | command          |
-|:------------|:--------|:--------------|:-----------------|
-| Python      | 3.10.11 |               |                  |
-| lxml        | 4.9.3   | 处理ElementTree | pip install lxml |
+| LibraryName    | Version | Description   | pip command                |
+|:---------------|:--------|:--------------|:---------------------------|
+| Python         | 3.10.11 |               |                            |
+| lxml           | 4.9.3   | 处理ElementTree | pip install lxml           |
+| Beautiful Soup | 4.12.1  | HTML数据提取      | pip install beautifulsoup4 |
 
 
 ## 文件说明
@@ -24,12 +25,11 @@ Python 爬虫集合
 
 ├── baidu -- 百度相关
     ├── TiebaHTMLSpider -- 贴吧: HTML页面
-    ├──
+    ├── TiebaJSONSpider -- 贴吧: HTML转为JSON数据
     ├──
     
 ├── bilibili -- B站相关
     ├──
-    ├── 
 ```
 
 ## 声明
