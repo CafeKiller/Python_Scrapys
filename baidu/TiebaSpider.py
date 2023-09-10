@@ -6,7 +6,7 @@ from urllib import request, parse
 from commons.ua_info import ua_list
 
 
-class TieBaSpider(object):
+class TieBaHTMLSpider(object):
     def __init__(self):
         self.url = "http://tieba.baidu.com/f?{}"
 
@@ -53,7 +53,7 @@ class TieBaSpider(object):
 if __name__ == "__main__":
     start = time.time()
 
-    spider = TieBaSpider()
+    spider = TieBaHTMLSpider()
     spider.run()
 
     end = time.time()
