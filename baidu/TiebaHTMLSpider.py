@@ -6,11 +6,13 @@ from urllib import request, parse
 from commons.ua_info import ua_list
 
 """
- @Desc      : 百度贴吧 HTML页面爬取
+ @Desc      : 百度贴吧 搜索页面 HTML页面爬取
  @Author    : Coffee_Killer
  @Timer     : 2023_9_10
  @Version   : 1.0
+ @Status    : None[未知]
 """
+
 
 class TieBaHTMLSpider(object):
     def __init__(self):

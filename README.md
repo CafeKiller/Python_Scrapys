@@ -12,9 +12,10 @@ Python 爬虫集合
 
 
 ## 技术栈
-| LibraryName | Version | Description |
-|:------------|:--------|:------------|
-| Python      | 3.10.11 |             |
+| LibraryName | Version | Description   | command          |
+|:------------|:--------|:--------------|:-----------------|
+| Python      | 3.10.11 |               |                  |
+| lxml        | 4.9.3   | 处理ElementTree | pip install lxml |
 
 
 ## 文件说明
