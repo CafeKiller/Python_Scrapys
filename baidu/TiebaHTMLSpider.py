@@ -5,11 +5,18 @@ from urllib import request, parse
 
 from commons.ua_info import ua_list
 
+"""
+ @Desc      : 百度贴吧 HTML页面爬取
+ @Author    : Coffee_Killer
+ @Timer     : 2023_9_10
+ @Version   : 1.0
+"""
 
 class TieBaHTMLSpider(object):
     def __init__(self):
         self.url = "http://tieba.baidu.com/f?{}"
 
+    # 请求函数
     def get_html(self, url):
         req = request.Request(url=url, headers={"User-Agent": random.choice(ua_list)})
         res = request.urlopen(req)
@@ -47,7 +54,7 @@ class TieBaHTMLSpider(object):
 
             print("### 爬取第%d页 抓取成功" % page)
 
-            time.sleep(random.randint(1,2))
+            time.sleep(random.randint(1, 2))
 
 
 if __name__ == "__main__":
