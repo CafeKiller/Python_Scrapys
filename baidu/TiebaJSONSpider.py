@@ -1,10 +1,13 @@
 import codecs
 import json
+import os
 import random
 import time
 import urllib.parse
 from urllib import request
 from lxml import etree
+
+from bs4 import BeautifulSoup
 
 from commons.ua_info import ua_list
 
@@ -30,60 +33,57 @@ class TieBaJSONSpider(object):
         return time
 
     def run(self, keyword):
-        output = codecs.open("_TieBa_.json", "w", encoding="utf-8")
+        output = codecs.open(os.getcwd() + "\\..\\outer_files\\" + "_TieBa_.json", "w", encoding="utf-8")
         output.write("[" + "\n")
 
         for pn in range(0, 1, 1):
             kw = u"{}".format(keyword).encode("utf-8")
             url = "http://tieba.baidu.com/f?kw=" + urllib.parse.quote(kw) + '&ie=utf-8&pn=' + str(pn)
-            print("#####", url)
+
+            print("##### run.for", url)
+
             req = request.Request(url)
             res = request.urlopen(req)
 
             html = res.read().decode("utf-8", "ignore")
-            # print("#######", html)
 
-            dom = etree.HTML(html)
+            doc = BeautifulSoup(html, features="lxml")
 
-            # print(dom)
+            last_len = len(doc.select("li.j_thread_list.thread_item_box")) - 1
+            for site in doc.select("li.j_thread_list.thread_item_box"):
 
-            for site in dom.xpath('//li[@data-field]'):
+                title = site.select_one("a.j_th_tit").get_text()
 
-                # print("#$#$#$#$#$#$", site.xpath('//span[@class="tb_icon_author "]')[0].text())
-                # _span = etree.tostring(site.xpath('//span[@class="tb_icon_author "]')[3])
-                print("#$#$#$#$#$#$", str(_span, "gbk"))
-
-                title = site.xpath('.//a')[0].text
-                article_url = site.xpath('.//a')[0].attrib['href']
-
-                # print("#$#$#$#$#$#$", article_url)
+                article_url = "https://tieba.baidu.com/" + site.select_one("a.j_th_tit").attrs['href']
 
                 # reply_date = self.get_timer_by_article('http://tieba.baidu.com' + article_url)
                 reply_date = ""
 
-                if len(site.xpath('.//*[@class="threadlist_abs threadlist_abs_onlyline "]')) > 1:
-                    desc = site.xpath('.//*[@class="threadlist_abs threadlist_abs_onlyline "]')[0].text.strip()
+                if len(site.select_one("span.frs-author-name-wrap").get_text()) > 1:
+                    author = site.select_one("span.frs-author-name-wrap").get_text()
                 else:
-                    desc = ""
+                    author = "NULL"
 
-                if len(site.xpath('.//*[@class="tb_icon_author"]')) > 1:
-                    print("#$#$#$#$#$#$", site.xpath('.//*[@class="tb_icon_author')[0].text)
-                    author = site.xpath('.//*[@class="tb_icon_author').attrib['href']
+                # print(site.select_one("div.threadlist_abs.threadlist_abs_onlyline"))
+                if site.select_one("div.threadlist_abs.threadlist_abs_onlyline") is not None:
+                    desc = site.select_one("div.threadlist_abs.threadlist_abs_onlyline").get_text()
                 else:
-                    author = ""
+                    desc = "NULL"
 
                 item = {
                     'title': title,
                     'author': author,
                     'desc': desc,
+                    'article_url': article_url,
                     'reply_date': reply_date
                 }
 
-                # print("#########", item)
-
                 line = json.dumps(item, ensure_ascii=False)
 
-                output.write(line + ",\n")
+                if site == doc.select("li.j_thread_list.thread_item_box")[last_len]:
+                    output.write(line + "\n")
+                else:
+                    output.write(line + ",\n")
 
         output.write("]")
         output.close()
