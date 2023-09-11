@@ -38,6 +38,7 @@ class MaoYanTopSpider(object):
         re_bds = '<div class="movie-item-info">.*?title="(.*?)".*?<p class="star">(.*?)</p>.*?class="releasetime">(.*?)</p>'
         pattern = re.compile(re_bds, re.S)
         re_list = pattern.findall(html)
+        self.save_html(re_list)
 
     # 保存数据
     def save_html(self, re_list):
@@ -53,11 +54,20 @@ class MaoYanTopSpider(object):
                 print("##########"+line)
 
     def run(self):
-        pass
+        for offset in range(0, 11, 10):
+            url = self.url.format(offset)
+            self.get_html(url)
+            time.sleep(random.randint(1,2))
 
 
 if __name__ == "__main__":
     start = time.time()
+
+    try:
+        spider = MaoYanTopSpider()
+        spider.run()
+    except Exception as e:
+        print("!!!!!!!!!!! Error")
 
     end = time.time()
     print("爬虫执行时间 ========> %.2f" % (end - start))
