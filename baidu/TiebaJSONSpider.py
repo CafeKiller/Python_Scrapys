@@ -23,67 +23,76 @@ from commons.ua_info import ua_list
 class TieBaJSONSpider(object):
 
     def get_timer_by_article(self, url):
+
         req = request.Request(url=url, headers={"User-Agent": random.choice(ua_list)})
         res = request.urlopen(req)
 
         html = res.read().decode("utf-8", "ignore")
-        dom = etree.HTML(html)
-        dom.xpath('//span[@class="threadlist_title pull_left j_th_tit "]')[0].text
-        print(time)
-        return time
+        dom = BeautifulSoup(html, features="lxml")
+
+        timer = dom.select("span.tail-info")[2].get_text()
+
+        return timer
 
     def run(self, keyword):
         output = codecs.open(os.getcwd() + "\\..\\outer_files\\" + "_TieBa_.json", "w", encoding="utf-8")
         output.write("[" + "\n")
 
         for pn in range(0, 1, 1):
+
             kw = u"{}".format(keyword).encode("utf-8")
             url = "http://tieba.baidu.com/f?kw=" + urllib.parse.quote(kw) + '&ie=utf-8&pn=' + str(pn)
 
-            print("##### run.for", url)
-
             req = request.Request(url)
             res = request.urlopen(req)
-
             html = res.read().decode("utf-8", "ignore")
 
-            doc = BeautifulSoup(html, features="lxml")
+            dom = BeautifulSoup(html, features="lxml")
 
-            last_len = len(doc.select("li.j_thread_list.thread_item_box")) - 1
-            for site in doc.select("li.j_thread_list.thread_item_box"):
+            last_len = len(dom.select("li.j_thread_list.thread_item_box")) - 1
+            for site in dom.select("li.j_thread_list.thread_item_box"):
 
+                # 获取帖子的标题
                 title = site.select_one("a.j_th_tit").get_text()
 
+                # 获取帖子的链接
                 article_url = "https://tieba.baidu.com/" + site.select_one("a.j_th_tit").attrs['href']
 
-                # reply_date = self.get_timer_by_article('http://tieba.baidu.com' + article_url)
-                reply_date = ""
+                # 获取帖子的发布时间
+                # reply_timer = self.get_timer_by_article(article_url)
+                reply_timer = ""
 
+                # 获取发帖者昵称
                 if len(site.select_one("span.frs-author-name-wrap").get_text()) > 1:
                     author = site.select_one("span.frs-author-name-wrap").get_text()
                 else:
                     author = "NULL"
 
-                # print(site.select_one("div.threadlist_abs.threadlist_abs_onlyline"))
+                # 获取帖子的简述内容
                 if site.select_one("div.threadlist_abs.threadlist_abs_onlyline") is not None:
                     desc = site.select_one("div.threadlist_abs.threadlist_abs_onlyline").get_text()
                 else:
                     desc = "NULL"
 
+                # 合成对象
                 item = {
                     'title': title,
                     'author': author,
                     'desc': desc,
                     'article_url': article_url,
-                    'reply_date': reply_date
+                    'reply_timer': reply_timer
                 }
 
                 line = json.dumps(item, ensure_ascii=False)
 
-                if site == doc.select("li.j_thread_list.thread_item_box")[last_len]:
+                # 判断是否是最后一条数据
+                if site == dom.select("li.j_thread_list.thread_item_box")[last_len]:
                     output.write(line + "\n")
                 else:
                     output.write(line + ",\n")
+
+                print("############## 爬取成功")
+                time.sleep(random.randint(1, 2))
 
         output.write("]")
         output.close()
