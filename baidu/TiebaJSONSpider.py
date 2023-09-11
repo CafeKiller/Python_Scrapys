@@ -12,16 +12,17 @@ from bs4 import BeautifulSoup
 from commons.ua_info import ua_list
 
 """
- @Desc      : 百度贴吧 搜索页面 JSON数据获取
+ @Desc      : 百度贴吧 搜索页面 JSON数据获取, 注意: 贴吧具有反爬取机制, 过度爬取会失效
  @Author    : Coffee_Killer
  @Timer     : 2023_9_10
- @Version   : 1.0
- @Status    : Error[不可用]
+ @Version   : 2.0
+ @Status    : Usable[可用]
 """
 
 
 class TieBaJSONSpider(object):
 
+    # 呼气帖子的发布时间
     def get_timer_by_article(self, url):
 
         req = request.Request(url=url, headers={"User-Agent": random.choice(ua_list)})
@@ -30,7 +31,10 @@ class TieBaJSONSpider(object):
         html = res.read().decode("utf-8", "ignore")
         dom = BeautifulSoup(html, features="lxml")
 
-        timer = dom.select("span.tail-info")[2].get_text()
+        if len(dom.select("span.tail-info")) < 4:
+            timer = dom.select("span.tail-info")[2].get_text()
+        else:
+            timer = "NULL"
 
         return timer
 
@@ -58,7 +62,8 @@ class TieBaJSONSpider(object):
                 # 获取帖子的链接
                 article_url = "https://tieba.baidu.com/" + site.select_one("a.j_th_tit").attrs['href']
 
-                # 获取帖子的发布时间
+                # 获取帖子的发布时间, 此时需要对帖子进行二次爬取, 速度较慢
+                # 可以选择不选择爬取, 提升爬取速度
                 # reply_timer = self.get_timer_by_article(article_url)
                 reply_timer = ""
 
@@ -91,8 +96,8 @@ class TieBaJSONSpider(object):
                 else:
                     output.write(line + ",\n")
 
-                print("############## 爬取成功")
-                time.sleep(random.randint(1, 2))
+                print("############## 爬取成功 休眠1~2秒")
+                # time.sleep(random.randint(1, 2))
 
         output.write("]")
         output.close()
