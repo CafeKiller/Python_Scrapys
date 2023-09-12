@@ -31,9 +31,10 @@ class MaoYanTopSpider(object):
 
         req = request.Request(url=url, headers=headers)
         res = request.urlopen(req)
-        html = res.read("utf-8", "ignore")
+        html = res.read().decode("utf-8", "ignore")
 
         self.parse_html(html)
+        print(html)
 
     # 解析HTML结构
     def parse_html(self, html):
