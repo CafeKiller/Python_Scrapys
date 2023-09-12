@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import csv
 import os
 import random
@@ -24,17 +25,13 @@ class MaoYanTopSpider(object):
 
     # 请求页面结构
     def get_html(self, url):
-        headers = {"User-Agent": random.choice(ua_list),
-                   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                   'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3','Accept-Encoding': 'gzip, deflate, sdch',
-                   'Accept-Language': 'en-US,en;q=0.8',
-                   'Connection': 'keep-alive'}
+        headers = {"User-Agent": random.choice(ua_list)}
 
         print(url)
 
         req = request.Request(url=url, headers=headers)
         res = request.urlopen(req)
-        html = res.read().decode()
+        html = res.read("utf-8", "ignore")
 
         self.parse_html(html)
 
@@ -58,24 +55,25 @@ class MaoYanTopSpider(object):
                 line = [name, star, timer]
 
                 writer.writerow(line)
-                print("##########"+line)
+                print("##########" + line)
 
     def run(self):
         for offset in range(0, 11, 10):
             url = self.url.format(offset)
             self.get_html(url)
-            time.sleep(random.randint(1,2))
+            time.sleep(random.randint(1, 2))
 
 
 if __name__ == "__main__":
     start = time.time()
 
-    try:
-        spider = MaoYanTopSpider()
-        spider.run()
-    except Exception as e:
-        print("!!!!!!!!!!! Error")
-        print(e)
+    spider = MaoYanTopSpider()
+    spider.run()
+    # try:
+    #
+    # except Exception as e:
+    #     print("!!!!!!!!!!! Error")
+    #     print(e)
 
     end = time.time()
     print("爬虫执行时间 ========> %.2f" % (end - start))
