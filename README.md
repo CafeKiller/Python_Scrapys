@@ -17,6 +17,7 @@ CoffeeKiller出品，古法编程，无AI，纯手敲，天然又健康
 | Python         | 3.10.11 |               |                            |
 | lxml           | 4.9.3   | 处理ElementTree | pip install lxml           |
 | Beautiful Soup | 4.12.1  | HTML数据提取      | pip install beautifulsoup4 |
+| crawlertool    | 0.1.28  | 爬虫工具集合        | pip install crawlertool    |
 
 
 ## 文件说明
