@@ -1,5 +1,10 @@
-
+import re
+from random import random
+from typing import List, Dict
 import crawlertool as tool
+
+from commons.ua_info import ua_list
+
 """
  @Desc      : AcFun 视频信息爬取
  @Author    : Coffee_Killer
@@ -8,7 +13,12 @@ import crawlertool as tool
  @Status    : None[未知]
 """
 
+
 class AcfunVideoInfoSpider(object):
+
+    _HEADERS = {
+        "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25"
+    }
 
     # 视频信息的url
     _DOWNLOAD_URL = ("https://api-new.acfunchina.com/rest/app/play/playInfo/mp4"
@@ -25,10 +35,23 @@ class AcfunVideoInfoSpider(object):
                      "&socName=UNKNOWN"
                      "&appMode=0")
 
-    def run(self):
-        tool
+    def run(self, page_url) -> list[Dict]:
+        response = tool.do_request(page_url, headers =self._HEADERS).text
+        title = re.search(r"(?<=<title>)[^<]+(?=</title>)", response).group()
+        video_id = re.search(r"(?<=\"vid\":\")\d+(?=\",)", response).group()
+        resource_id = re.search(r"(?<=\"ac\":\")\d+(?=\",)", response).group()
+
+        rep_info = tool.do_request(self._DOWNLOAD_URL.format(video_id, resource_id), headers =self._HEADERS)
+
+        video_url = rep_info.json()["playInfo"]["streams"][0]["playUrls"][0]
+
+        return [{
+            "Title": title,
+            "Download Url": video_url
+        }]
 
 
 if __name__ == "__main__":
+    page_url = "https://www.acfun.cn/v/ac16986343"
     spider = AcfunVideoInfoSpider()
-    spider.run()
+    print(spider.run(page_url))
