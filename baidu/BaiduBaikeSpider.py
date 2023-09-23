@@ -74,6 +74,19 @@ class HtmlParser(object):
             new_urls.add(new_full_url)
         return new_urls
 
+    def _get_new_data(self, page_url, soup):
+
+        res_data = {}
+        res_data['url'] = page_url
+        soup.find('dd', class_="lemmaWgt-lemmaTitle-title").find("h1")
+        print(res_data['title'])
+
+        catlog_node = soup.select('div[class="para"]')
+        for content in catlog_node:
+          print(content.get_text().strip())
+
+        return res_data
+
 
 
 
