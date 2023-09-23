@@ -1,5 +1,4 @@
 
-
 """
  @Desc      : 百度贴吧 搜索页面 HTML页面爬取
  @Author    : Coffee_Killer
@@ -19,6 +18,25 @@ from bs4 import BeautifulSoup
 
 class BaiduBaikeSpider(object):
     def __init__(self):
+        self.urls = UrlManager()
+        self.downloader = HtmlDownloader()
+        self.parser = HtmlParser()
+        self.outer = HtmlOuter()
+
+    def craw(self, root_url):
+        count = 1
+        self.urls.add_new_url(root_url)
+        while self.urls.has_new_url():
+            try:
+                new_url = self.urls.get_new_url()
+                count = count+1
+                print("craw %d : %s" % (count, new_url))
+                html_cont = self.downloader.download(new_url)
+                new_urls, new_data = self.parser.parse(new_url, html_cont)
+
+
+            except:
+                print("craw failed")
 
 
 class UrlManager(object):
@@ -125,9 +143,3 @@ class HtmlOuter(object):
         f_outer.write("</table>")
         f_outer.write("</body>")
         f_outer.write("</html>")
-
-
-
-
-
-
