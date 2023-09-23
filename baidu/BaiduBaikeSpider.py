@@ -1,4 +1,3 @@
-
 """
  @Desc      : 百度贴吧 搜索页面 HTML页面爬取
  @Author    : Coffee_Killer
@@ -29,14 +28,25 @@ class BaiduBaikeSpider(object):
         while self.urls.has_new_url():
             try:
                 new_url = self.urls.get_new_url()
-                count = count+1
+                count = count + 1
                 print("craw %d : %s" % (count, new_url))
                 html_cont = self.downloader.download(new_url)
                 new_urls, new_data = self.parser.parse(new_url, html_cont)
-
-
+                self.urls.add_new_urls(new_urls)
+                self.outer.collect_data(new_data)
+                if count == 10:
+                    print("Done~")
+                    break
             except:
                 print("craw failed")
+
+        self.outer.outer_html()
+
+
+if __name__ == "__main__":
+    root_url = "https://baike.baidu.com/item/python/407313"
+    obj_spider = BaiduBaikeSpider()
+    obj_spider.craw(root_url)
 
 
 class UrlManager(object):
@@ -66,6 +76,8 @@ class UrlManager(object):
 
 
 ssl._create_default_https_context = ssl.create_default_context()
+
+
 class HtmlDownloader(object):
     def download(self, url):
         if url is None:
@@ -104,7 +116,7 @@ class HtmlParser(object):
 
         catlog_node = soup.select('div[class="para"]')
         for content in catlog_node:
-          print(content.get_text().strip())
+            print(content.get_text().strip())
 
         return res_data
 
@@ -116,6 +128,7 @@ class HtmlParser(object):
         new_urls = self._get_new_urls(page_url, soup)
         new_data = self._get_new_data(page_url, soup)
         return new_urls, new_data
+
 
 class HtmlOuter(object):
     def __init__(self):
