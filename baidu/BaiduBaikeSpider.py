@@ -13,6 +13,8 @@ import urllib.request
 from urllib import error
 from urllib.parse import urljoin
 
+from bs4 import BeautifulSoup
+
 
 class BaiduBaikeSpider(object):
     def __init__(self):
@@ -86,6 +88,15 @@ class HtmlParser(object):
           print(content.get_text().strip())
 
         return res_data
+
+    def parse(self, page_url, html_cont):
+        if page_url is None or html_cont is None:
+            print("page_url is None")
+            return
+        soup = BeautifulSoup(html_cont, "html.parser", from_encoding='utf-8')
+        new_urls = self._get_new_urls(page_url, soup)
+        new_data = self._get_new_data(page_url, soup)
+        return new_urls, new_data
 
 
 
