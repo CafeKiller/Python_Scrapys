@@ -7,6 +7,7 @@
  @Version   : 1.0
  @Status    : None[未知]
 """
+import os
 import re
 import ssl
 import urllib.request
@@ -97,6 +98,35 @@ class HtmlParser(object):
         new_urls = self._get_new_urls(page_url, soup)
         new_data = self._get_new_data(page_url, soup)
         return new_urls, new_data
+
+class HtmlOuter(object):
+    def __init__(self):
+        self.datas = []
+
+    def collect_data(self, data):
+        if data is None:
+            return
+        self.datas.append(data)
+
+    def outer_html(self):
+        f_outer = open(os.getcwd() + "\\..\\outer_files\\outer.html", "w")
+
+        f_outer.write("<html>")
+        f_outer.write("<body>")
+        f_outer.write("<table>")
+
+        for data in self.datas:
+            f_outer.write("<tr>")
+            f_outer.write("<td>%s</td>" % data['url'])
+            f_outer.write("<td>%s</td>" % data['title'].encode('utf-8'))
+            # fout.write("<td>%s</td>" % data['summary'].encode('utf-8'))
+            f_outer.write("</tr>")
+
+        f_outer.write("</table>")
+        f_outer.write("</body>")
+        f_outer.write("</html>")
+
+
 
 
 
