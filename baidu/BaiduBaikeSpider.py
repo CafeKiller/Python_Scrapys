@@ -7,6 +7,9 @@
  @Version   : 1.0
  @Status    : None[未知]
 """
+import urllib.request
+from urllib import error
+
 
 class BaiduBaikeSpider(object):
     def __init__(self):
@@ -36,3 +39,20 @@ class UrlManager(object):
         new_url = self.new_urls.pop()
         self.old_urls.add(new_url)
         return new_url
+
+class HtmlDownloader(object):
+    def download(self, url):
+        if url is None:
+            print("url is None")
+            return None
+        try:
+            response = urllib.request.urlopen(url, timeout=30)
+            if response.getcode() != 200:
+                print("failed")
+                return None
+            print("success")
+        except error.URLError as e:
+            print(e.reason)
+        print(response.read())
+        return response.read()
+
