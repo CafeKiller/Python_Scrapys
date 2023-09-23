@@ -7,8 +7,11 @@
  @Version   : 1.0
  @Status    : None[未知]
 """
+import re
+import ssl
 import urllib.request
 from urllib import error
+from urllib.parse import urljoin
 
 
 class BaiduBaikeSpider(object):
@@ -40,6 +43,8 @@ class UrlManager(object):
         self.old_urls.add(new_url)
         return new_url
 
+
+ssl._create_default_https_context = ssl.create_default_context()
 class HtmlDownloader(object):
     def download(self, url):
         if url is None:
@@ -55,4 +60,20 @@ class HtmlDownloader(object):
             print(e.reason)
         print(response.read())
         return response.read()
+
+
+class HtmlParser(object):
+    def _get_new_urls(self, page_url, soup):
+
+        new_urls = set()
+        links = soup.find_all('a', href=re.compile(r"/item/*"))
+
+        for link in links:
+            new_url = link['href']
+            new_full_url = urljoin(page_url, new_url)
+            new_urls.add(new_full_url)
+        return new_urls
+
+
+
 
