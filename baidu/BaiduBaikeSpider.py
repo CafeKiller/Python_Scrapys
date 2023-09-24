@@ -1,10 +1,3 @@
-"""
- @Desc      : 百度贴吧 搜索页面 HTML页面爬取
- @Author    : Coffee_Killer
- @Timer     : 2023_9_23
- @Version   : 1.0
- @Status    : None[未知]
-"""
 import os
 import re
 import ssl
@@ -13,6 +6,14 @@ from urllib import error
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
+
+"""
+ @Desc      : 百度贴吧 搜索页面 HTML页面爬取
+ @Author    : Coffee_Killer
+ @Timer     : 2023_9_23
+ @Version   : 1.0
+ @Status    : None[未知]
+"""
 
 
 class BaiduBaikeSpider(object):
@@ -41,12 +42,6 @@ class BaiduBaikeSpider(object):
                 print("craw failed")
 
         self.outer.outer_html()
-
-
-if __name__ == "__main__":
-    root_url = "https://baike.baidu.com/item/python/407313"
-    obj_spider = BaiduBaikeSpider()
-    obj_spider.craw(root_url)
 
 
 class UrlManager(object):
@@ -156,3 +151,9 @@ class HtmlOuter(object):
         f_outer.write("</table>")
         f_outer.write("</body>")
         f_outer.write("</html>")
+
+
+if __name__ == "__main__":
+    root_url = "https://baike.baidu.com/item/python/407313"
+    obj_spider = BaiduBaikeSpider()
+    obj_spider.craw(root_url)
